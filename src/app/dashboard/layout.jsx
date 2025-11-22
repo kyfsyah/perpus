@@ -1,0 +1,48 @@
+"use client";
+
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import ProfileMenu from "@/components/form/ProfileMenu";
+
+export default function Layout({ children }) {
+  return (
+    <div className="min-h-screen w-full flex bg-[#EEF2F7] font-poppins">
+      {/* SIDEBAR */}
+      <aside className="w-64 bg-white h-screen shadow-xl p-6 fixed left-0 top-0 border-r rounded-r-3xl flex flex-col justify-between">
+
+        {/* MENU ATAS */}
+        <nav className="flex flex-col gap-4 text-gray-700 text-[15px] font-medium">
+          <Link href="/users/homepage" className="p-2 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition">
+            Dashboard
+          </Link>
+
+          <Link href="/users/homepage/category" className="p-2 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition">
+            Kelola Buku
+          </Link>
+
+          <Link href="/favorite" className="p-2 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition">
+            Kelola Anggota
+          </Link>
+
+          <Link href="/users/homepage/favorite" className="p-2 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition">
+            
+          </Link>
+
+          <Link href="/favorite" className="p-2 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition">
+          
+          </Link>
+        </nav>
+
+        {/* PROFILE DI BAGIAN BAWAH */}
+        <div className="mt-10">
+          <ProfileMenu />
+        </div>
+
+      </aside>
+
+      {/* CONTENT */}
+      <main className="ml-64 flex-1 p-8">{children}</main>
+    </div>
+  );
+}
