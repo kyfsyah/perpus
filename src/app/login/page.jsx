@@ -2,10 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
-import { useEffect } from "react";
 
 export default function LoginPage() {
-  // === LOGIN HANDLER ===
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -15,6 +13,9 @@ export default function LoginPage() {
 
     const res = await fetch("/api/auth/login", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json", // ← WAJIB
+      },
       body: JSON.stringify({ email, password }),
     });
 
@@ -26,10 +27,21 @@ export default function LoginPage() {
     }
 
     // Redirect berdasarkan role
-    if (data.role === "admin") {
-      window.location.href = "/admin/dashboard";
-    } else {
-      window.location.href = "/";
+    switch (data.role) {
+      case "admin":
+        window.location.href = "/admin/dashboard";
+        break;
+
+      case "petugas":
+        window.location.href = "/dashboard";
+        break;
+
+      case "siswa":
+        window.location.href = "/users/homepage";
+        break;
+
+      default:
+        window.location.href = "/";
     }
   }
 
@@ -38,13 +50,8 @@ export default function LoginPage() {
       className="relative min-h-screen flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: "url('../../assets/Tb.jpg')" }}
     >
-      {/* Blur background */}
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-
-      {/* CARD LOGIN */}
       <div className="relative bg-white/90 shadow-2xl rounded-2xl flex flex-col md:flex-row w-full max-w-4xl overflow-hidden z-10 backdrop-blur-md">
-
-        {/* FORM LEFT */}
         <div className="w-full md:w-1/2 p-10">
           <h1 className="text-3xl font-bold text-sky-700 mb-6 text-center">
             Masuk ke Akun
@@ -85,7 +92,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="w-full bg-sky-600 text-white py-2 rounded-lg hover:bg-sky-700 transition duration-300 font-semibold shadow-md"
+              className="w-full bg-sky-600 text-white py-2 -mt-3 rounded-lg hover:bg-sky-700 transition duration-300 font-semibold shadow-md"
             >
               Masuk Sekarang
             </button>
