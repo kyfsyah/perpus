@@ -10,10 +10,12 @@ export default function RegisterPage() {
     const name = form.get("name");
     const email = form.get("email");
     const password = form.get("password");
+    const gender = form.get("gender");
 
     const res = await fetch("/api/auth/register", {
       method: "POST",
-      body: JSON.stringify({ name, email, password }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password, gender }),
     });
 
     const data = await res.json();
@@ -26,6 +28,7 @@ export default function RegisterPage() {
     alert("Pendaftaran berhasil! Silakan login.");
     window.location.href = "/login";
   }
+
 
   return (
     <div
@@ -80,6 +83,22 @@ export default function RegisterPage() {
                 required
               />
             </div>
+
+            <div>
+              <label className="block text-sky-800 font-semibold mb-2">
+                Jenis Kelamin
+              </label>
+              <select
+                name="gender"
+                className="w-full px-4 py-2 border border-sky-400/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-sm"
+                required
+              >
+                <option value="">Pilih jenis kelamin</option>
+                <option value="Laki-laki">Laki-laki</option>
+                <option value="Perempuan">Perempuan</option>
+              </select>
+            </div>
+
 
             <button
               type="submit"

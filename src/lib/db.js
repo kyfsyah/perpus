@@ -1,10 +1,17 @@
 import mysql from "mysql2/promise";
 
-export const db = await mysql.createPool({
-  host: "localhost",       // ganti sesuai MySQL Workbench
-  user: "root",
-  password: "",
-  database: "db_perpustakaan",
-  waitForConnections: true,
-});
-export default db;
+let pool;
+
+export async function getDb() {
+  if (!pool) {
+    pool = mysql.createPool({
+      host: process.env.DB_HOST || "localhost",
+      user: process.env.DB_USER || "root",
+      password: process.env.DB_PASSWORD || "",
+      database: process.env.DB_NAME || "db_perpustakaan",
+      waitForConnections: true,
+      connectionLimit: 10,
+    });
+  }
+  return pool;
+}

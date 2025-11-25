@@ -5,10 +5,10 @@ export default async function DashboardPage() {
 
   return (
     <div className="grid grid-cols-4 gap-6">
-      <CardInfo title="Total Users"  color="bg-blue-500" />
-      <CardInfo title="Petugas"  color="bg-green-500" />
-      <CardInfo title="Admin" color="bg-yellow-500" />
-      <CardInfo title="Books"  color="bg-red-500" />
+      <CardInfo title="Total User"  color="bg-white" />
+      <CardInfo title="Petugas"  color="bg-white" />
+      <CardInfo title="Admin" color="bg-white" />
+      <CardInfo title="Books"  color="bg-white" />
     </div>
   );
 }

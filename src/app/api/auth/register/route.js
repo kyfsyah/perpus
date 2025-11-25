@@ -1,44 +1,39 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import prisma from "@/lib/db"; // Sesuaikan
-import { z } from "zod";
-
-const RegisterSchema = z.object({
-  username: z.string().min(3),
-  password: z.string().min(6),
-  role: z.enum(["admin", "petugas", "siswa"]).optional(),
-});
+import { getDb } from "@/lib/db";
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const data = RegisterSchema.parse(body);
+    const { name, email, password, gender } = await req.json();
 
-    const existing = await prisma.user.findUnique({
-      where: { username: data.username },
-    });
+    const db = await getDb();
 
-    if (existing)
+    // Cek apakah email sudah terdaftar
+    const [existing] = await db.query(
+      "SELECT id_users FROM users WHERE email = ?",
+      [email]
+    );
+
+    if (existing.length > 0) {
       return NextResponse.json(
-        { message: "Username sudah dipakai" },
+        { error: "Email sudah digunakan" },
         { status: 400 }
       );
+    }
 
-    const hashed = await bcrypt.hash(data.password, 10);
+    // Hash password
+    const hashed = await bcrypt.hash(password, 10);
 
-    await prisma.user.create({
-      data: {
-        username: data.username,
-        password: hashed,
-        role: data.role ?? "siswa",
-      },
-    });
+    // Insert user baru
+    await db.query(
+      "INSERT INTO users (username, email, password, role, jenis_kelamin) VALUES (?, ?, ?, 'siswa', ?)",
+      [name, email, hashed, gender]
+    );
 
     return NextResponse.json({ message: "Register berhasil" });
+
   } catch (err) {
-    return NextResponse.json(
-      { message: "Register gagal", error: err.message },
-      { status: 500 }
-    );
+    console.error("REGISTER ERROR:", err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

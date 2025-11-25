@@ -29,7 +29,7 @@ export default function LoginPage() {
     // Redirect berdasarkan role
     switch (data.role) {
       case "admin":
-        window.location.href = "/admin/dashboard";
+        window.location.href = "/dashboard";
         break;
 
       case "petugas":

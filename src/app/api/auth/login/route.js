@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
-import pool from "@/lib/db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { getDb } from "@/lib/db";
 
 export async function POST(req) {
   try {
     const { email, password } = await req.json();
 
-    // 1. CARI USER BY EMAIL
-    const [rows] = await pool.query(
+    const db = await getDb();
+
+    const [rows] = await db.query(
       "SELECT * FROM users WHERE email = ?",
       [email]
     );
@@ -22,7 +23,6 @@ export async function POST(req) {
 
     const user = rows[0];
 
-    // 2. COCOKKAN PASSWORD HASH
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return NextResponse.json(
@@ -31,35 +31,32 @@ export async function POST(req) {
       );
     }
 
-    // 3. BUAT JWT TOKEN
     const token = jwt.sign(
       {
-        id: user.id,
+        id: user.id_users,
+        username: user.username,
+        email: user.email,
         role: user.role,
-        nama: user.nama,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
-    // 4. RESPONSE
     const res = NextResponse.json({
       success: true,
-      message: "Login berhasil",
       role: user.role,
     });
 
-    // 5. SIMPAN TOKEN DI COOKIE HTTP ONLY
     res.cookies.set("token", token, {
       httpOnly: true,
       path: "/",
-      maxAge: 60 * 60 * 24, // 1 hari
+      maxAge: 60 * 60 * 24,
     });
 
     return res;
 
   } catch (err) {
-    console.error(err);
+    console.error("LOGIN ERROR:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

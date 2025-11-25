@@ -6,21 +6,29 @@ export async function GET(req) {
     const token = req.cookies.get("token")?.value;
 
     if (!token) {
-      return NextResponse.json({ user: null }, { status: 401 });
+      return NextResponse.json(
+        { user: null },
+        { status: 401 }
+      );
     }
 
+    // Decode JWT
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // HANYA kirim data yang boleh dilihat user
     return NextResponse.json({
       user: {
         id: decoded.id,
-        nama: decoded.nama,
-        email: decoded.email, // kalau di JWT ada
-      },
+        username: decoded.username, // nama user dari JWT
+        email: decoded.email,
+        role: decoded.role,
+      }
     });
 
   } catch (err) {
-    return NextResponse.json({ user: null }, { status: 401 });
+    console.error("ME ERROR:", err);
+    return NextResponse.json(
+      { user: null },
+      { status: 401 }
+    );
   }
 }

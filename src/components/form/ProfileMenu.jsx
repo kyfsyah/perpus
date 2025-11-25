@@ -4,21 +4,22 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-export default function ProfileSidebar() {
+export default function ProfileMenu() {
   const [role, setRole] = useState("");
-  const [name, setName] = useState("User Name");
+  const [name, setName] = useState("User");
   const [open, setOpen] = useState(false);
-  const router = useRouter();
   const menuRef = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     const r = localStorage.getItem("role");
     const n = localStorage.getItem("name");
 
-    setRole(r);
-    if (n) setName(n);
+    setRole(r || "");
+    setName(n || "User");
   }, []);
 
+  // Close dropdown if click outside
   useEffect(() => {
     const handler = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -35,33 +36,32 @@ export default function ProfileSidebar() {
   };
 
   return (
-    <div className="relative select-none" ref={menuRef}>
-      {/* PROFILE BAR */}
-      <div
-        className="flex items-center gap-3 p-2 bg-gray-100 rounded-xl cursor-pointer hover:bg-gray-200 transition"
+    <div className="relative" ref={menuRef}>
+      
+      {/* BUTTON (Avatar + Name + Arrow) */}
+      <button
         onClick={() => setOpen(!open)}
+        className="flex items-center gap-3 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition"
       >
-        {/* FOTO PROFIL */}
         <Image
-          src="/profile.jpg"  // ganti sesuai path foto user
+          src="/assets/Tb.jpg"
           alt="profile"
-          width={40}
-          height={40}
-          className="rounded-full"
+          width={36}
+          height={36}
+          className="rounded-full border"
         />
 
-        {/* NAMA USER */}
-        <div className="flex flex-col">
-          <span className="font-medium text-sm">{name}</span>
-          <span className="text-xs text-gray-500">{role}</span>
-        </div>
-      </div>
+        <span className="text-sm font-medium text-gray-700">{name}</span>
 
-      {/* DROPDOWN MENU */}
+        <span className="text-gray-500 text-sm">▾</span>
+      </button>
+
+      {/* DROPDOWN */}
       {open && (
-        <div className="absolute bottom-14 left-0 w-48 bg-white shadow-xl rounded-xl p-2">
+        <div className="absolute right-0 mt-3 w-48 bg-white shadow-xl rounded-xl p-2 border">
+          
           <button
-            onClick={() => router.push("/profile")}
+            onClick={() => router.push("/users/homepage/profile")}
             className="w-full text-left p-2 hover:bg-gray-100 rounded-lg"
           >
             Profile
@@ -89,6 +89,7 @@ export default function ProfileSidebar() {
           >
             Logout
           </button>
+
         </div>
       )}
     </div>

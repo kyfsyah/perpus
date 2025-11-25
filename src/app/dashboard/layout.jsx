@@ -1,48 +1,84 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import ProfileMenu from "@/components/form/ProfileMenu";
+import { Search } from "lucide-react";
 
 export default function Layout({ children }) {
-  return (
-    <div className="min-h-screen w-full flex bg-[#EEF2F7] font-poppins">
-      {/* SIDEBAR */}
-      <aside className="w-64 bg-white h-screen shadow-xl p-6 fixed left-0 top-0 border-r rounded-r-3xl flex flex-col justify-between">
+  const [user, setUser] = useState(null);
 
-        {/* MENU ATAS */}
-        <nav className="flex flex-col gap-4 text-gray-700 text-[15px] font-medium">
-          <Link href="/users/homepage" className="p-2 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition">
+useEffect(() => {
+  async function fetchUser() {
+    const res = await fetch("/api/auth/me");
+    const data = await res.json();
+    if (res.ok) setUser(data.user);
+  }
+  fetchUser();
+}, []);
+
+  return (
+    <div className="flex min-h-screen bg-gray-100">
+
+      {/* ===== SIDEBAR ===== */}
+      <aside className="w-56 bg-white shadow-md p-5 flex flex-col gap-6">
+
+        {/* Logo */}
+        <div className="flex items-center gap-2 px-2">
+          <Image src="/assets/logoTB.jpg" width={32} height={32} alt="logo" />
+          <h2 className="font-semibold text-gray-800">BookBase</h2>
+        </div>
+
+        {/* Menu */}
+        <nav className="flex flex-col gap-3 text-gray-600">
+
+          <Link href="/dashboard" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
             Dashboard
           </Link>
 
-          <Link href="/users/homepage/category" className="p-2 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition">
+          <Link href="/dashboard/users" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
+            Kelola User
+          </Link>
+
+          <Link href="/users/favorite" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
             Kelola Buku
           </Link>
 
-          <Link href="/favorite" className="p-2 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition">
-            Kelola Anggota
-          </Link>
-
-          <Link href="/users/homepage/favorite" className="p-2 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition">
+          <Link href="/users/my-library" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
             
           </Link>
 
-          <Link href="/favorite" className="p-2 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition">
-          
-          </Link>
         </nav>
-
-        {/* PROFILE DI BAGIAN BAWAH */}
-        <div className="mt-10">
-          <ProfileMenu />
-        </div>
-
       </aside>
 
-      {/* CONTENT */}
-      <main className="ml-64 flex-1 p-8">{children}</main>
+      {/* ===== MAIN CONTENT AREA ===== */}
+      <div className="flex-1 flex flex-col">
+
+        {/* ===== TOPBAR ===== */}
+        <header className="w-full bg-white px-6 py-4 shadow flex items-center justify-between">
+
+          {/* Search */}
+          <div className="flex items-center w-[350px] bg-gray-100 px-4 py-2 rounded-lg text-gray-500">
+            <Search size={24} className="mr-2" />
+            <input
+              type="text"
+              placeholder="Search your favourite books..."
+              className="bg-transparent outline-none w-full text-gray-700"
+            />
+          </div>
+
+          {/* Profile */}
+          <ProfileMenu />
+        </header>
+
+        {/* ===== PAGE CONTENT ===== */}
+        <main className="p-6">
+          {children}
+        </main>
+
+      </div>
     </div>
   );
 }
