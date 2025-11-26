@@ -5,19 +5,16 @@ export function middleware(req) {
   const token = req.cookies.get("token")?.value;
   const pathname = req.nextUrl.pathname;
 
-  // Halaman publik (tidak butuh login)
-  const publicPaths = ["/login", "/register", "/api/auth/login", "/api/auth/register"];
+  // PUBLIC ROUTES
+  const publicPaths = ["/login", "/register"];
+  if (publicPaths.includes(pathname)) return NextResponse.next();
 
-  if (publicPaths.includes(pathname)) {
-    return NextResponse.next();
-  }
-
-  // Kalau belum login → login page
+  // NO TOKEN → LOGIN
   if (!token) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // Decode token
+  // VERIFY JWT
   let user;
   try {
     user = jwt.verify(token, process.env.JWT_SECRET);
@@ -27,35 +24,46 @@ export function middleware(req) {
 
   const role = user.role;
 
-  // ============================================
-  // ROLE SISWA
-  // ============================================
+  // ============================================================
+  // SISWA RULES
+  // ============================================================
   if (role === "siswa") {
-    // siswa tidak boleh akses dashboard
+    // siswa tidak boleh dashboard
     if (pathname.startsWith("/dashboard")) {
       return NextResponse.redirect(new URL("/forbidden", req.url));
     }
 
-    // siswa hanya boleh akses area users/homepage
+    // siswa hanya boleh berada di /users/homepage/*
     if (!pathname.startsWith("/users/homepage")) {
       return NextResponse.redirect(new URL("/users/homepage", req.url));
     }
   }
 
-  // ============================================
-  // ROLE PETUGAS
-  // ============================================
+  // ============================================================
+  // PETUGAS RULES
+  // ============================================================
   if (role === "petugas") {
-    // petugas boleh dashboard tapi tidak boleh manage user penuh
-    if (pathname.startsWith("/dashboard/users/manage")) {
+
+    // 1. Petugas ga boleh manage user
+    if (pathname.startsWith("/dashboard/users")) {
       return NextResponse.redirect(new URL("/forbidden", req.url));
+    }
+
+    // 2. Petugas ga boleh masuk area siswa
+    if (pathname.startsWith("/users")) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+
+    // 3. Petugas hanya boleh dashboard + kelola buku
+    //    (/dashboard/* dan /dashboard/books/*)
+    if (!pathname.startsWith("/dashboard")) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
     }
   }
 
-  // ============================================
-  // ROLE ADMIN
-  // (tidak ada pembatas)
-  // ============================================
+  // ============================================================
+  // ADMIN RULES (NO LIMIT)
+  // ============================================================
 
   return NextResponse.next();
 }

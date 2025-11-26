@@ -2,25 +2,32 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { getDb } from "@/lib/db";
+import { cookies } from "next/headers";
 
 export async function PUT(req) {
   try {
-    const token = req.cookies.get("token")?.value;
+    const token = cookies().get("token")?.value;
 
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Decode JWT
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    }
+
     const userId = decoded.id;
 
-    // Ambil data dari body
+    // Ambil body request
     const { username, email, password } = await req.json();
 
     const db = await getDb();
 
-    // Cek apakah email sudah dipakai user lain
+    // Cek email dipakai user lain
     const [checkEmail] = await db.query(
       "SELECT id_users FROM users WHERE email = ? AND id_users != ?",
       [email, userId]
@@ -33,23 +40,24 @@ export async function PUT(req) {
       );
     }
 
-    // Jika password diisi → hash baru
-    if (password && password.length > 0) {
+    // Jika ada password baru → hash
+    let query;
+    let params;
+
+    if (password && password.trim() !== "") {
       const hashed = await bcrypt.hash(password, 10);
-
-      await db.query(
-        "UPDATE users SET username = ?, email = ?, password = ? WHERE id_users = ?",
-        [username, email, hashed, userId]
-      );
-
+      query =
+        "UPDATE users SET username = ?, email = ?, password = ? WHERE id_users = ?";
+      params = [username, email, hashed, userId];
     } else {
-      await db.query(
-        "UPDATE users SET username = ?, email = ? WHERE id_users = ?",
-        [username, email, userId]
-      );
+      query =
+        "UPDATE users SET username = ?, email = ? WHERE id_users = ?";
+      params = [username, email, userId];
     }
 
-    // Buat token baru dengan data terbaru
+    await db.query(query, params);
+
+    // Buat token baru
     const newToken = jwt.sign(
       {
         id: userId,
@@ -61,11 +69,20 @@ export async function PUT(req) {
       { expiresIn: "1d" }
     );
 
-    const res = NextResponse.json({ message: "Profile updated" });
+    const res = NextResponse.json({
+      message: "Profile updated",
+      user: {
+        id: userId,
+        username,
+        email,
+        role: decoded.role,
+      }
+    });
 
-    // Simpan token baru
+    // Simpan cookie baru
     res.cookies.set("token", newToken, {
       httpOnly: true,
+      sameSite: "strict",
       path: "/",
       maxAge: 60 * 60 * 24,
     });

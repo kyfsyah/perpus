@@ -10,23 +10,23 @@ import { Search } from "lucide-react";
 export default function Layout({ children }) {
   const [user, setUser] = useState(null);
 
-useEffect(() => {
-  async function fetchUser() {
-    const res = await fetch("/api/auth/me");
-    const data = await res.json();
-    if (res.ok) setUser(data.user);
-  }
-  fetchUser();
-}, []);
+  useEffect(() => {
+    async function fetchUser() {
+      const res = await fetch("/api/auth/me");
+      const data = await res.json();
+      if (res.ok) setUser(data.user);
+    }
+    fetchUser();
+  }, []);
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex bg-gray-100 min-h-screen">
 
-      {/* ===== SIDEBAR ===== */}
-      <aside className="w-56 bg-white shadow-md p-5 flex flex-col gap-6">
+      {/* ================= SIDEBAR ================= */}
+      <aside className="fixed top-0 left-0 w-56 h-screen bg-white shadow-md p-5 z-30 overflow-y-auto">
 
         {/* Logo */}
-        <div className="flex items-center gap-2 px-2">
+        <div className="flex items-center gap-2 px-2 mb-6">
           <Image src="/assets/logoTB.jpg" width={32} height={32} alt="logo" />
           <h2 className="font-semibold text-gray-800">BookBase</h2>
         </div>
@@ -42,22 +42,18 @@ useEffect(() => {
             Kelola User
           </Link>
 
-          <Link href="/users/favorite" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
+          <Link href="/dashboard/books" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
             Kelola Buku
-          </Link>
-
-          <Link href="/users/my-library" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
-            
           </Link>
 
         </nav>
       </aside>
 
-      {/* ===== MAIN CONTENT AREA ===== */}
-      <div className="flex-1 flex flex-col">
+      {/* ================= MAIN CONTENT ================= */}
+      <div className="ml-56 flex-1 min-h-screen">
 
-        {/* ===== TOPBAR ===== */}
-        <header className="w-full bg-white px-6 py-4 shadow flex items-center justify-between">
+        {/* ================= TOPBAR ================= */}
+        <header className="fixed top-0 left-56 right-0 h-16 bg-white shadow px-6 flex items-center justify-between z-20">
 
           {/* Search */}
           <div className="flex items-center w-[350px] bg-gray-100 px-4 py-2 rounded-lg text-gray-500">
@@ -73,8 +69,8 @@ useEffect(() => {
           <ProfileMenu />
         </header>
 
-        {/* ===== PAGE CONTENT ===== */}
-        <main className="p-6">
+        {/* ================= PAGE CONTENT ================= */}
+        <main className="pt-20 px-6 pb-10">
           {children}
         </main>
 

@@ -14,7 +14,7 @@ export default function ProfilePage() {
         <div className="w-24 h-24 bg-gray-300 rounded-full" />
 
         <div className="flex flex-col">
-          <h2 className="text-xl font-semibold text-gray-800">Vynns</h2>
+          <h2 className="text-xl font-semibold text-gray-800">Rizky</h2>
           <p className="text-gray-500 text-sm mt-2">Member since <span className="font-semibold">2024</span></p>
         </div>
       </div>
@@ -23,12 +23,12 @@ export default function ProfilePage() {
 
         <div>
           <label className="text-gray-700 font-semibold text-sm">Full Name</label>
-          <input className="w-full mt-1 p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-400" defaultValue="Vynns"/>
+          <input className="w-full mt-1 p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-400" defaultValue="Rizky"/>
         </div>
 
         <div>
           <label className="text-gray-700 font-semibold text-sm">Email</label>
-          <input className="w-full mt-1 p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-400" defaultValue="mhdptr42@gmail.com"/>
+          <input className="w-full mt-1 p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-400" defaultValue="kyyfardiyansyah@gmail.com"/>
         </div>
         <Button className="bg-teal-500 text-white w-full mt-4">Save Changes</Button>
       </div>
