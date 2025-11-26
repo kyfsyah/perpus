@@ -1,95 +1,115 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { ChevronDown } from "lucide-react";
 
 export default function ProfileMenu() {
-  const [role, setRole] = useState("");
-  const [name, setName] = useState("User");
+  const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false);
-  const menuRef = useRef(null);
   const router = useRouter();
+  const menuRef = useRef(null);
 
   useEffect(() => {
-    const r = localStorage.getItem("role");
-    const n = localStorage.getItem("name");
+    async function fetchUser() {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (!res.ok) {
+          setUser(null);
+          return;
+        }
 
-    setRole(r || "");
-    setName(n || "User");
+        const data = await res.json();
+        if (data?.user) {
+          setUser(data.user);
+
+          const nm = data.user.name || data.user.username || "User";
+          localStorage.setItem("name", nm);
+          localStorage.setItem("role", data.user.role || "");
+        }
+      } catch (err) {
+        console.error("FETCH ME ERROR:", err);
+      }
+    }
+
+    fetchUser();
   }, []);
 
-  // Close dropdown if click outside
   useEffect(() => {
-    const handler = (e) => {
+    function handleClickOutside(e) {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setOpen(false);
       }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const logout = () => {
+  async function handleLogout() {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (err) {
+      console.error("LOGOUT ERROR:", err);
+    }
     localStorage.clear();
-    router.push("/");
-  };
+    router.push("/login");
+  }
+
+  const displayName = user?.name || user?.username || "User";
+  const initial = displayName.charAt(0).toUpperCase();
 
   return (
     <div className="relative" ref={menuRef}>
-      
-      {/* BUTTON (Avatar + Name + Arrow) */}
       <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-3 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition"
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="flex items-center gap-3 px-3 py-1.5 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-gray-50 transition"
       >
-        <Image
-          src="/assets/Tb.jpg"
-          alt="profile"
-          width={36}
-          height={36}
-          className="rounded-full border"
-        />
+        <div className="w-9 h-9 rounded-full bg-sky-500 text-white flex items-center justify-center text-sm font-semibold">
+          {initial}
+        </div>
 
-        <span className="text-sm font-medium text-gray-700">{name}</span>
+        <div className="hidden sm:flex flex-col items-start">
+          <span className="text-sm font-medium text-gray-800">
+            {displayName}
+          </span>
+          {user?.role && (
+            <span className="text-xs text-gray-500 capitalize">
+              
+            </span>
+          )}
+        </div>
 
-        <span className="text-gray-500 text-sm">▾</span>
+        <ChevronDown size={18} className="text-gray-500" />
       </button>
 
-      {/* DROPDOWN */}
       {open && (
-        <div className="absolute right-0 mt-3 w-48 bg-white shadow-xl rounded-xl p-2 border">
-          
+        <div className="absolute right-0 mt-2 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-30">
+          <div className="px-4 py-2 border-b border-gray-100">
+            <p className="text-sm font-medium text-gray-800">{displayName}</p>
+            {user?.email && (
+              <p className="text-xs text-gray-500 truncate">{user.email}</p>
+            )}
+          </div>
+
           <button
-            onClick={() => router.push("/users/homepage/profile")}
-            className="w-full text-left p-2 hover:bg-gray-100 rounded-lg"
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              router.push("/users/homepage/profile");
+            }}
+            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
           >
             Profile
           </button>
 
           <button
-            onClick={() => router.push("/settings")}
-            className="w-full text-left p-2 hover:bg-gray-100 rounded-lg"
-          >
-            Settings
-          </button>
-
-          {role === "admin" && (
-            <button
-              onClick={() => router.push("/admin/dashboard")}
-              className="w-full text-left p-2 hover:bg-gray-100 rounded-lg text-blue-600 font-medium"
-            >
-              Admin Dashboard
-            </button>
-          )}
-
-          <button
-            onClick={logout}
-            className="w-full text-left p-2 hover:bg-gray-100 rounded-lg text-red-500"
+            type="button"
+            onClick={handleLogout}
+            className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50"
           >
             Logout
           </button>
-
         </div>
       )}
     </div>

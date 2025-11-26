@@ -41,7 +41,7 @@ export default function Layout({ children }) {
             Kategori
           </Link>
           
-          <Link href="/users/my-library" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
+          <Link href="/users/homepage/buku" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
             Buku
           </Link>
 

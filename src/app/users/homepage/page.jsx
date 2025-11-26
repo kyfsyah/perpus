@@ -36,9 +36,9 @@ export default function HomePage() {
             <h2 className="text-xl font-semibold text-gray-800">
               Recommended
             </h2>
-            <button className="text-sm font-medium text-sky-600 hover:underline">
-              Lainnya →
-            </button>
+              <button className="text-sm font-medium text-sky-600 hover:underline">
+                Lainnya →
+              </button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
@@ -77,9 +77,11 @@ export default function HomePage() {
         <section className="bg-white rounded-2xl shadow-md border p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-800">Buku</h2>
-            <button className="text-sm font-medium text-sky-600 hover:underline">
-              Lainnya →
-            </button>
+            <Link href="/users/homepage/buku">
+              <button className="text-sm font-medium text-sky-600 hover:underline">
+                Lainnya →
+              </button>
+            </Link>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
