@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import ProfileMenu from "@/components/form/ProfileMenu";
 import { Search } from "lucide-react";
+import ProfileMenuUser from "@/components/profile/ProfileMenuUser";
+
 
 export default function Layout({ children }) {
   const [user, setUser] = useState(null);
@@ -28,7 +29,7 @@ export default function Layout({ children }) {
         {/* Logo */}
         <div className="flex items-center gap-2 px-2">
           <Image src="/assets/logoTB.jpg" width={32} height={32} alt="logo" />
-          <h2 className="font-semibold text-sky-600">CENDIKIA</h2>
+          <Link href="/users/homepage" className="font-semibold text-sky-600">CENDIKIA</Link>
         </div>
 
         {/* Menu */}
@@ -69,7 +70,7 @@ export default function Layout({ children }) {
           </div>
 
           {/* Profile */}
-          <ProfileMenu />
+          <ProfileMenuUser />
         </header>
 
         {/* ===== PAGE CONTENT ===== */}

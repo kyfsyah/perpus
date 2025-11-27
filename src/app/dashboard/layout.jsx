@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import ProfileMenu from "@/components/form/ProfileMenu";
 import { Search } from "lucide-react";
+import ProfileMenuDashboard from "@/components/profile/ProfileMenuDashboard";
 
 export default function Layout({ children }) {
   const [user, setUser] = useState(null);
@@ -66,7 +66,7 @@ export default function Layout({ children }) {
           </div>
 
           {/* Profile */}
-          <ProfileMenu />
+          <ProfileMenuDashboard />
         </header>
 
         {/* ================= PAGE CONTENT ================= */}

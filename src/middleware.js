@@ -6,7 +6,7 @@ export function middleware(req) {
   const pathname = req.nextUrl.pathname;
 
   // PUBLIC ROUTES
-  const publicPaths = ["/login", "/register"];
+  const publicPaths = ["/login", "/register",];
   if (publicPaths.includes(pathname)) return NextResponse.next();
 
   // NO TOKEN → LOGIN

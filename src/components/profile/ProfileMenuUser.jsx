@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 
-export default function ProfileMenu() {
+export default function ProfileMenuUser() {
   const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -14,70 +14,52 @@ export default function ProfileMenu() {
     async function fetchUser() {
       try {
         const res = await fetch("/api/auth/me");
-        if (!res.ok) {
-          setUser(null);
-          return;
-        }
-
         const data = await res.json();
-        if (data?.user) {
-          setUser(data.user);
-
-          const nm = data.user.name || data.user.username || "User";
-          localStorage.setItem("name", nm);
-          localStorage.setItem("role", data.user.role || "");
-        }
+        setUser(data.user);
       } catch (err) {
-        console.error("FETCH ME ERROR:", err);
+        console.error("USER FETCH ERROR:", err);
       }
     }
-
     fetchUser();
   }, []);
 
+  // close dropdown
   useEffect(() => {
-    function handleClickOutside(e) {
+    function handler(e) {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   async function handleLogout() {
-    try {
-      await fetch("/api/auth/logout", { method: "POST" });
-    } catch (err) {
-      console.error("LOGOUT ERROR:", err);
-    }
+    await fetch("/api/auth/logout", { method: "POST" });
     localStorage.clear();
     router.push("/login");
   }
 
-  const displayName = user?.name || user?.username || "User";
-  const initial = displayName.charAt(0).toUpperCase();
+  const initial = user?.username?.[0]?.toUpperCase() || "U";
+  const displayName = user?.username || "User";
+
+  function goToProfile() {
+    router.push("/users/homepage/profile");
+  }
 
   return (
     <div className="relative" ref={menuRef}>
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="flex items-center gap-3 px-3 py-1.5 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-gray-50 transition"
+        className="flex items-center gap-3 px-3 py-1.5 hover:bg-gray-50 transition"
       >
         <div className="w-9 h-9 rounded-full bg-sky-500 text-white flex items-center justify-center text-sm font-semibold">
           {initial}
         </div>
 
         <div className="hidden sm:flex flex-col items-start">
-          <span className="text-sm font-medium text-gray-800">
-            {displayName}
-          </span>
-          {user?.role && (
-            <span className="text-xs text-gray-500 capitalize">
-              
-            </span>
-          )}
+          <span className="text-sm font-medium text-gray-800">{displayName}</span>
         </div>
 
         <ChevronDown size={18} className="text-gray-500" />
@@ -85,18 +67,17 @@ export default function ProfileMenu() {
 
       {open && (
         <div className="absolute right-0 mt-2 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-30">
+
           <div className="px-4 py-2 border-b border-gray-100">
             <p className="text-sm font-medium text-gray-800">{displayName}</p>
-            {user?.email && (
-              <p className="text-xs text-gray-500 truncate">{user.email}</p>
-            )}
+            <p className="text-xs text-gray-500 truncate">{user?.email}</p>
           </div>
 
           <button
             type="button"
             onClick={() => {
               setOpen(false);
-              router.push("/users/homepage/profile");
+              goToProfile();
             }}
             className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
           >
