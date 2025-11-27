@@ -51,7 +51,7 @@ export default function ProfileForm() {
       const endpoint =
         role === "siswa"
           ? "/api/users/update"
-          : "/api/user/update";
+          : "/api/users/update";
 
       const res = await fetch(endpoint, {
         method: "PUT",
@@ -82,7 +82,7 @@ export default function ProfileForm() {
     if (!ok) return;
 
     try {
-      const res = await fetch("/api/user/delete", { method: "DELETE" });
+      const res = await fetch("/api/users/delete", { method: "DELETE" });
       const data = await res.json();
 
       if (!res.ok) {
