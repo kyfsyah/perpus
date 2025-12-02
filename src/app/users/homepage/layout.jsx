@@ -38,16 +38,20 @@ export default function Layout({ children }) {
             Beranda
           </Link>
 
-          <Link href="/users/homepage/category" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
+          <Link href="/users/homepage/kategori" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
             Kategori
           </Link>
           
-          <Link href="/users/homepage/buku" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
+          <Link href="/users/homepage/book" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
             Buku
           </Link>
 
           <Link href="/users/homepage/favorite" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
             Favorite
+          </Link>
+
+          <Link href="/users/homepage/history" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
+            History
           </Link>
 
         </nav>
@@ -74,7 +78,7 @@ export default function Layout({ children }) {
         </header>
 
         {/* ===== PAGE CONTENT ===== */}
-        <main className="p-6 pt-24">
+        <main className="p-6 pt-[85px] relative z-0">
           {children}
         </main>
 

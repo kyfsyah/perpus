@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Kami() {
   return (
-    <section className="w-full max-w-6xl mx-auto py-20 px-6 grid grid-cols-1 md:grid-cols-2 gap-12">
+    <section id="Kami" className="w-full max-w-6xl mx-auto py-20 px-6 grid grid-cols-1 md:grid-cols-2 gap-12">
 
       {/* TEXT SIDE */}
       <div className="flex flex-col justify-center">

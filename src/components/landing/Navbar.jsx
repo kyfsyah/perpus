@@ -28,10 +28,9 @@ export default function Navbar() {
 
       <ul className="hidden md:flex gap-8 font-medium text-gray-700">
         <li><Link href="/" className="hover:text-sky-700">Beranda</Link></li>
-        <li><Link href="/about" className="hover:text-sky-700">Tentang</Link></li>
-        <li><Link href="/pinjam" className="hover:text-sky-700">Pinjam Buku</Link></li>
-        <li><Link href="/pengembalian" className="hover:text-sky-700">Pengembalian</Link></li>
-        <li><Link href="/riwayat" className="hover:text-sky-700">Riwayat</Link></li>
+        <li><Link href="#Kami" className="hover:text-sky-700">Tentang</Link></li>
+        <li><Link href="#PreviewBook" className="hover:text-sky-700">Buku</Link></li>
+        <li><Link href="#" className="hover:text-sky-700">Kontak</Link></li>
       </ul>
 
       <div className="hidden md:flex gap-3">

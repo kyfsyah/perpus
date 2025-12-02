@@ -28,7 +28,7 @@ export default function Layout({ children }) {
         {/* Logo */}
         <div className="flex items-center gap-2 px-2 mb-6">
           <Image src="/assets/logoTB.jpg" width={32} height={32} alt="logo" />
-          <h2 className="font-semibold text-gray-800">BookBase</h2>
+          <Link href="/dashboard" className="font-semibold text-sky-600">CENDIKIA</Link>
         </div>
 
         {/* Menu */}
@@ -46,6 +46,9 @@ export default function Layout({ children }) {
             Kelola Buku
           </Link>
 
+          <Link href="/dashboard/peminjaman" className="hover:bg-blue-50 px-3 py-2 rounded-lg">
+            Peminjaman
+          </Link>
         </nav>
       </aside>
 
@@ -70,7 +73,7 @@ export default function Layout({ children }) {
         </header>
 
         {/* ================= PAGE CONTENT ================= */}
-        <main className="pt-20 px-6 pb-10">
+        <main className="p-6 pt-[80px] relative z-0">
           {children}
         </main>
 

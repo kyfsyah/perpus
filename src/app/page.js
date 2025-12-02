@@ -1,10 +1,12 @@
 import Navbar from "@/components/landing/Navbar";
 import Kami from "@/components/landing/Kami";
+import PreviewBook from "@/components/landing/PreviewBook";
 import Link from "next/link";
+import Footer from "@/components/landing/Footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-sky-100 to-white text-gray-800 font-poppins">
+    <div className="min-h-screen bg-gradient-to-b from-sky-100 to-white text-gray-800 font-poppins">
       <Navbar />
 
       <section className="flex flex-col justify-center items-center text-center min-h-screen px-6 relative overflow-hidden">
@@ -29,11 +31,19 @@ export default function Home() {
         </Link>
       </section>
 
-      <section className="py-24 bg-gray-50 px-6">
+      <section className="py-26 bg-gray-50 px-6">
         <div className="max-w-6xl px-6 mx-auto">
           <Kami />
         </div>
       </section>
-    </main>
+
+      <section className="py-24 bg-gray-50 px-6">
+        <div className="max-w-6xl px-2 mx-auto">
+          <PreviewBook />
+        </div>
+      </section>
+
+        <Footer />
+    </div>
   );
 }

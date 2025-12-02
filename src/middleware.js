@@ -4,75 +4,113 @@ import jwt from "jsonwebtoken";
 export const runtime = "nodejs";
 
 export function middleware(req) {
-  let pathname = req.nextUrl.pathname;
+  const url = req.nextUrl.clone();
+  const pathname = url.pathname;
+
   const token = req.cookies.get("token")?.value;
 
+  // ============================
+  // HANDLE API ROUTES
+  // ============================
+  if (pathname.startsWith("/api")) {
+    if (!token) {
+      return NextResponse.json(
+        { success: false, msg: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    let user;
+    try {
+      user = jwt.verify(token, process.env.JWT_SECRET);
+    } catch {
+      return NextResponse.json(
+        { success: false, msg: "Invalid Token" },
+        { status: 401 }
+      );
+    }
+
+    // API PEMINJAMAN → khusus admin & petugas
+    if (pathname.startsWith("/api/peminjaman")) {
+      if (user.role !== "admin" && user.role !== "petugas") {
+        return NextResponse.json(
+          { success: false, msg: "Forbidden" },
+          { status: 403 }
+        );
+      }
+    }
+
+    // API FAVORITE & BOOK → siswa boleh akses
+    return NextResponse.next();
+  }
+
+  // ============================
   // PUBLIC ROUTES
+  // ============================
   const publicPaths = ["/", "/login", "/register"];
   if (publicPaths.includes(pathname)) return NextResponse.next();
 
-  // NO TOKEN → LOGIN
+  // ============================
+  // TOKEN CHECK FOR UI ROUTES
+  // ============================
   if (!token) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
   }
 
-  // VERIFY JWT
   let user;
   try {
     user = jwt.verify(token, process.env.JWT_SECRET);
   } catch {
-    return NextResponse.redirect(new URL("/login", req.url));
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
   }
 
   const role = user.role;
 
-  // ============================================================
-  // SISWA
-  // ============================================================
+  // ============================
+  // SISWA RULES
+  // ============================
   if (role === "siswa") {
-    // siswa tidak boleh dashboard
     if (pathname.startsWith("/dashboard")) {
-      return NextResponse.redirect(new URL("/forbidden", req.url));
+      url.pathname = "/forbidden";
+      return NextResponse.redirect(url);
     }
 
-    // siswa hanya boleh /users/homepage/*
     if (!pathname.startsWith("/users/homepage")) {
-      return NextResponse.redirect(new URL("/users/homepage", req.url));
+      url.pathname = "/users/homepage";
+      return NextResponse.redirect(url);
     }
   }
 
-  // ============================================================
-  // PETUGAS
-  // ============================================================
+  // ============================
+  // PETUGAS RULES
+  // ============================
   if (role === "petugas") {
-    // petugas tidak boleh area siswa
     if (pathname.startsWith("/users")) {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+      url.pathname = "/dashboard";
+      return NextResponse.redirect(url);
     }
 
-    // petugas tidak boleh kelola user/admin area
-    if (pathname.startsWith("/dashboard/users")) {
-      return NextResponse.redirect(new URL("/forbidden", req.url));
-    }
-
-    // petugas hanya boleh area dashboard
     if (!pathname.startsWith("/dashboard")) {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+      url.pathname = "/dashboard";
+      return NextResponse.redirect(url);
     }
   }
 
-  // ============================================================
-  // ADMIN → bebas
-  // ============================================================
+  // ============================
+  // ADMIN → full access
+  // ============================
 
   return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    "/dashboard/:path*",  // admin & petugas
-    "/users/:path*",      // siswa area
+    "/dashboard/:path*",
+    "/users/:path*",
     "/login",
     "/register",
   ],
 };
+

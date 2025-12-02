@@ -1,118 +1,171 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import React from "react";
-import Image from "next/image";
 import Link from "next/link";
-
+import { toggleFavorite } from "@/lib/favorite";
+import { Heart } from "lucide-react";
 
 export default function HomePage() {
   const [books, setBooks] = useState([]);
   const [recommended, setRecommended] = useState([]);
+  const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
     async function fetchBooks() {
       try {
-        const res = await fetch("/api/book?limit=20");
-        if (!res.ok) throw new Error("Gagal fetch buku");
-        const data = await res.json();
+        const res = await fetch("/api/book?limit=10");
+        const json = await res.json();
+        const list = Array.isArray(json) ? json : json.data || [];
 
-        setBooks(data);
-        setRecommended(data.slice(0, 4)); // 4 buku recommended biar persis kayak contoh
+        setBooks(list);
+        setRecommended(list.slice(0, 4));
       } catch (err) {
         console.error("FETCH BOOK ERROR:", err);
       }
     }
 
+    async function fetchFavorites() {
+      const res = await fetch("/api/favorite");
+      const json = await res.json();
+
+      setFavorites((json.data || []).map((b) => b.id_buku));
+    }
+
     fetchBooks();
+    fetchFavorites();
   }, []);
+
+  const isFavorite = (id) => favorites.includes(id);
+
+  const handleFavorite = async (bookId) => {
+    const state = await toggleFavorite(bookId, isFavorite(bookId));
+
+    setFavorites((prev) =>
+      state === false
+        ? prev.filter((x) => x !== bookId)
+        : [...prev, bookId]
+    );
+  };
 
   return (
     <div className="flex gap-6">
       <div className="flex-1 space-y-8">
-        {/* ===== RECOMMENDED ===== */}
+
+        {/* ========================== */}
+        {/* RECOMMENDED SECTION */}
+        {/* ========================== */}
         <section className="bg-white rounded-2xl shadow-md border p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-800">
-              Recommended
-            </h2>
-              <button className="text-sm font-medium text-sky-600 hover:underline">
-                Lainnya →
-              </button>
+            <h2 className="text-xl font-semibold text-gray-800">Recommended</h2>
+            <button className="text-sm text-sky-600 hover:underline">Lainnya →</button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {recommended.map((book) => (
-              <Link
-                href={`/users/book/${book.id_buku}`}
+              <div
                 key={book.id_buku}
-                className="bg-white rounded-2xl shadow-sm border hover:shadow-md transition flex flex-col"
+                className="relative bg-white rounded-2xl shadow-sm border hover:shadow-md transition flex flex-col"
               >
-                {/* WRAPPER COVER – mirip banget sama contoh */}
-                <div className="bg-[#e6eff9] rounded-t-2xl px-4 pt-6 pb-4 flex justify-center">
-                  <div className="w-full h-64 bg-white rounded-xl shadow flex items-center justify-center">
-                    <img
-                      src={`/image/cover/${book.cover_buku}`}
-                      alt={book.judul_buku}
-                      className="max-h-full max-w-full object-contain"
-                    />
-                  </div>
-                </div>
+                {/* FAVORITE BUTTON */}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleFavorite(book.id_buku);
+                  }}
+                  className="absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full bg-white/70 backdrop-blur-md shadow-md hover:bg-white transition z-20"
+                >
+                  <Heart
+                    size={20}
+                    className={
+                      isFavorite(book.id_buku)
+                        ? "fill-red-500 text-red-500"
+                        : "text-gray-500"
+                    }
+                  />
+                </button>
 
-                {/* TEXT AREA */}
-                <div className="px-5 py-4">
-                  <h3 className="text-base font-semibold text-gray-900 leading-snug line-clamp-2">
-                    {book.judul_buku}
-                  </h3>
-                  <p className="mt-1 text-sm text-gray-500">
-                    {book.penulis_buku}
-                  </p>
-                </div>
-              </Link>
+                <Link href={`/users/homepage/book/${book.id_buku}`} className="flex flex-col">
+                  <div className="bg-[#e6eff9] rounded-t-2xl px-4 pt-6 pb-4 flex justify-center">
+                    <div className="w-full h-64 bg-white rounded-xl shadow flex items-center justify-center">
+                      <img
+                        src={`/image/cover/${book.cover_buku}`}
+                        alt={book.judul_buku}
+                        className="max-h-full max-w-full object-contain"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="px-5 py-4">
+                    <h3 className="text-base font-semibold text-gray-900 leading-snug line-clamp-2">
+                      {book.judul_buku}
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-500">{book.penulis_buku}</p>
+                  </div>
+                </Link>
+              </div>
             ))}
           </div>
         </section>
 
-        {/* ===== SEMUA BUKU ===== */}
+        {/* ========================== */}
+        {/* SEMUA BUKU */}
+        {/* ========================== */}
         <section className="bg-white rounded-2xl shadow-md border p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-800">Buku</h2>
-            <Link href="/users/homepage/buku">
-              <button className="text-sm font-medium text-sky-600 hover:underline">
-                Lainnya →
-              </button>
+            <Link href="/users/homepage/book">
+              <button className="text-sm text-sky-600 hover:underline">Lainnya →</button>
             </Link>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {books.map((book) => (
-              <Link
-                href={`/users/book/${book.id_buku}`}
+              <div
                 key={book.id_buku}
-                className="bg-white rounded-2xl shadow-sm border hover:shadow-md transition flex flex-col"
+                className="relative bg-white rounded-2xl shadow-sm border hover:shadow-md transition flex flex-col"
               >
-                <div className="bg-[#f3f5fb] rounded-t-2xl px-3 pt-4 pb-3 flex justify-center">
-                  <div className="w-full h-56 bg-white rounded-xl shadow flex items-center justify-center">
-                    <img
-                      src={`/image/cover/${book.cover_buku}`}
-                      alt={book.judul_buku}
-                      className="max-h-full max-w-full object-contain"
-                    />
-                  </div>
-                </div>
+                {/* FAVORITE BUTTON */}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleFavorite(book.id_buku);
+                  }}
+                  className="absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full 
+                             bg-white/70 backdrop-blur-md shadow-md hover:bg-white transition z-20"
+                >
+                  <Heart
+                    size={20}
+                    className={
+                      isFavorite(book.id_buku)
+                        ? "fill-red-500 text-red-500"
+                        : "text-gray-500"
+                    }
+                  />
+                </button>
 
-                <div className="px-4 py-3">
-                  <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
-                    {book.judul_buku}
-                  </h3>
-                  <p className="mt-1 text-xs text-gray-500">
-                    {book.penulis_buku}
-                  </p>
-                </div>
-              </Link>
+                <Link href={`/users/homepage/book/${book.id_buku}`}>
+                  <div className="bg-[#f3f5fb] rounded-t-2xl px-3 pt-4 pb-3 flex justify-center">
+                    <div className="w-full h-56 bg-white rounded-xl shadow flex items-center justify-center">
+                      <img
+                        src={`/image/cover/${book.cover_buku}`}
+                        alt={book.judul_buku}
+                        className="max-h-full max-w-full object-contain"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="px-4 py-3">
+                    <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
+                      {book.judul_buku}
+                    </h3>
+                    <p className="mt-1 text-xs text-gray-500">{book.penulis_buku}</p>
+                  </div>
+                </Link>
+              </div>
             ))}
           </div>
         </section>
+
       </div>
     </div>
   );
