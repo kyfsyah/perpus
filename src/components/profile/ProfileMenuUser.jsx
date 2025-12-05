@@ -37,7 +37,7 @@ export default function ProfileMenuUser() {
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
     localStorage.clear();
-    router.push("/login");
+    router.push("/");
   }
 
   const initial = user?.username?.[0]?.toUpperCase() || "U";

@@ -119,7 +119,7 @@ export default function PeminjamanPage() {
 
             <button
               type="submit"
-              className="flex-1 bg-blue-700 text-white py-3 rounded-lg hover:bg-blue-800"
+              className="flex-1 bg-sky-500 text-white py-3 rounded-lg hover:bg-sky-600"
             >
               Konfirmasi
             </button>

@@ -22,7 +22,7 @@ export default function SidebarAdmin() {
             <Link
               href={m.path}
               className={`block px-4 py-2 rounded ${
-                path === m.path ? "bg-blue-600 text-black" : "hover:bg-gray-700"
+                path === m.path ? "bg-sky-500 text-black" : "hover:bg-gray-700"
               }`}
             >
               {m.name}

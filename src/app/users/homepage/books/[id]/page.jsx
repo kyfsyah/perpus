@@ -171,7 +171,7 @@ export default function BooksDetail() {
         {/* FAVORIT */}
         <button
           onClick={toggleFavorite}
-          className="px-8 py-3 bg-blue-800 text-white rounded-lg font-medium hover:bg-blue-900 transition flex items-center gap-2"
+          className="px-8 py-3 bg-sky-500 text-white rounded-lg font-medium hover:bg-sky-600 transition flex items-center gap-2"
         >
           {isFavorite ? "Hapus dari Favorite" : "Tambahkan ke Favorite"}
         </button>
@@ -179,7 +179,7 @@ export default function BooksDetail() {
         {/* PINJAM */}
         <button
           onClick={() => window.location.href = `/users/homepage/books/${books.id_buku}/peminjaman`}
-          className="px-8 py-3 bg-blue-800 text-white rounded-lg font-medium hover:bg-blue-900 transition"
+          className="px-8 py-3 bg-sky-500 text-white rounded-lg font-medium hover:bg-sky-600 transition"
         >
           Pinjam buku ini
         </button>

@@ -190,7 +190,7 @@ export default function EditBuku() {
 
         {/* SUBMIT */}
         <div className="col-span-2 flex justify-end">
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg">
+          <button className="bg-sky-500 text-white px-6 py-3 rounded-lg">
             Simpan Perubahan
           </button>
         </div>

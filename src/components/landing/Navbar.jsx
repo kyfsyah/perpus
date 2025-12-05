@@ -30,7 +30,7 @@ export default function Navbar() {
         <li><Link href="/" className="hover:text-sky-700">Beranda</Link></li>
         <li><Link href="#Kami" className="hover:text-sky-700">Tentang</Link></li>
         <li><Link href="#PreviewBook" className="hover:text-sky-700">Buku</Link></li>
-        <li><Link href="#" className="hover:text-sky-700">Kontak</Link></li>
+        <li><Link href="#Footer" className="hover:text-sky-700">Kontak</Link></li>
       </ul>
 
       <div className="hidden md:flex gap-3">

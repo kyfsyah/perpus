@@ -52,7 +52,7 @@ export default function ProfileMenu() {
       console.error("LOGOUT ERROR:", err);
     }
     localStorage.clear();
-    router.push("/login");
+    router.push("/");
   }
 
   const displayName = user?.username || "User";

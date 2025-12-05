@@ -27,7 +27,7 @@ export default function KelolaBukuPage() {
         <h1 className="text-2xl font-semibold">Kelola Buku</h1>
         <Link
           href="/dashboard/books/tambah"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-sky-600 text-white px-4 py-2 rounded"
         >
           Tambah Buku
         </Link>
@@ -69,7 +69,7 @@ export default function KelolaBukuPage() {
                 <td className="p-3 space-x-2">
                   <Link
                     href={`/dashboard/books/${b.id_buku}`}
-                    className="text-blue-600 hover:underline text-sm"
+                    className="text-blue-500 hover:underline text-sm"
                   >
                     Edit
                   </Link>
