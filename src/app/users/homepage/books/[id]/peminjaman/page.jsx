@@ -7,7 +7,7 @@ export default function PeminjamanPage() {
   const router = useRouter();
   const { id } = useParams(); // <-- Wajib begini di Client Component
 
-  const [book, setBook] = useState(null);
+  const [books, setBooks] = useState(null);
   const [tanggalPinjam, setTanggalPinjam] = useState("");
   const [tanggalPengembalian, setTanggalPengembalian] = useState("");
   const [error, setError] = useState("");
@@ -15,12 +15,12 @@ export default function PeminjamanPage() {
   useEffect(() => {
     if (!id) return;
 
-    async function loadBook() {
-      const res = await fetch(`/api/book/${id}`);
+    async function loadBooks() {
+      const res = await fetch(`/api/books/${id}`);
       const data = await res.json();
-      setBook(data);
+      setBooks(data);
     }
-    loadBook();
+    loadBooks();
   }, [id]);
 
   async function submitPeminjaman(e) {
@@ -61,7 +61,7 @@ export default function PeminjamanPage() {
     else setError("Gagal membuat peminjaman");
   }
 
-  if (!book) return <div className="p-6">Loading...</div>;
+  if (!books) return <div className="p-6">Loading...</div>;
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur flex items-center justify-center p-4 z-[9999]">
@@ -72,12 +72,12 @@ export default function PeminjamanPage() {
 
         <div className="flex gap-4 mb-6">
           <img
-            src={`/image/cover/${book.cover_buku}`}
+            src={`/image/cover/${books.cover_buku}`}
             className="w-28 h-40 rounded-lg object-cover shadow"
           />
           <div>
-            <h2 className="font-semibold text-xl">{book.judul_buku}</h2>
-            <p className="text-gray-500">{book.penulis_buku}</p>
+            <h2 className="font-semibold text-xl">{books.judul_buku}</h2>
+            <p className="text-gray-500">{books.penulis_buku}</p>
           </div>
         </div>
 

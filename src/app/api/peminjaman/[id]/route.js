@@ -2,22 +2,22 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 
 export async function GET(req, { params }) {
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const db = await getDb();
 
     const [[row]] = await db.query(`
-  SELECT 
-    p.*,
-    p.pangembalian AS pengembalian,
-    u.nama AS user_nama,
-    b.judul_buku AS buku_judul
-    FROM peminjaman p
-    JOIN users u ON u.id_users = p.id_users
-    JOIN buku b ON b.id_buku = p.id_book
-    WHERE p.id_peminjaman = ?`, 
-    [id]);
+      SELECT 
+        p.*,
+        p.pengembalian AS pengembalian,
+        u.username AS user_nama,
+        b.judul_buku AS buku_judul
+      FROM peminjaman p
+      JOIN users u ON u.id_users = p.id_users
+      JOIN buku b ON b.id_buku = p.id_book
+      WHERE p.id_peminjaman = ?`, 
+      [id]);
 
     return NextResponse.json({ success: true, data: row });
 

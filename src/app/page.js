@@ -17,7 +17,7 @@ export default function Home() {
         </h1>
 
         <h2 className="text-4xl md:text-5xl font-extrabold text-sky-600 mb-6">
-          Perpustakaan CENDEKIA
+          Perpustakaan STARBHAK
         </h2>
 
         <p className="text-gray-700 text-lg md:text-xl max-w-2xl mb-10">

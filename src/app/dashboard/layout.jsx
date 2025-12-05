@@ -28,7 +28,7 @@ export default function Layout({ children }) {
         {/* Logo */}
         <div className="flex items-center gap-2 px-2 mb-6">
           <Image src="/assets/logoTB.jpg" width={32} height={32} alt="logo" />
-          <Link href="/dashboard" className="font-semibold text-sky-600">CENDIKIA</Link>
+          <Link href="/dashboard" className="font-semibold text-sky-600">STARBHAK</Link>
         </div>
 
         {/* Menu */}

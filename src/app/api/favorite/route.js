@@ -55,9 +55,9 @@ export async function POST(req) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  const { bookId } = await req.json();
-  if (!bookId) {
-    return NextResponse.json({ success: false, error: "Missing bookId" }, { status: 400 });
+  const { booksId } = await req.json();
+  if (!booksId) {
+    return NextResponse.json({ success: false, error: "Missing booksId" }, { status: 400 });
   }
 
   try {
@@ -68,7 +68,7 @@ export async function POST(req) {
       INSERT IGNORE INTO favorite (id_users, id_buku)
       VALUES (?, ?)
     `,
-      [user.id, bookId]
+      [user.id, booksId]
     );
 
     return NextResponse.json({ success: true });
@@ -90,9 +90,9 @@ export async function DELETE(req) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  const { bookId } = await req.json();
-  if (!bookId) {
-    return NextResponse.json({ success: false, error: "Missing bookId" }, { status: 400 });
+  const { booksId } = await req.json();
+  if (!booksId) {
+    return NextResponse.json({ success: false, error: "Missing booksId" }, { status: 400 });
   }
 
   try {
@@ -103,7 +103,7 @@ export async function DELETE(req) {
       DELETE FROM favorite
       WHERE id_users = ? AND id_buku = ?
     `,
-      [user.id, bookId]
+      [user.id, booksId]
     );
 
     return NextResponse.json({ success: true });

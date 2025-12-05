@@ -32,17 +32,17 @@ export default function FavoritePage() {
             </p>
           )}
 
-          {books.map((book) => (
+          {books.map((books) => (
             <Link
-              href={`/users/homepage/book/${book.id_buku}`}
-              key={book.id_buku}
+              href={`/users/homepage/books/${books.id_buku}`}
+              key={books.id_buku}
               className="bg-white rounded-2xl shadow-sm border hover:shadow-md transition flex flex-col"
             >
               <div className="bg-[#f3f5fb] rounded-t-2xl px-3 pt-4 pb-3 flex justify-center">
                 <div className="w-full h-56 bg-white rounded-xl shadow flex items-center justify-center">
                   <img
-                    src={`/image/cover/${book.cover_buku}`}
-                    alt={book.judul_buku}
+                    src={`/image/cover/${books.cover_buku}`}
+                    alt={books.judul_buku}
                     className="max-h-full max-w-full object-contain"
                   />
                 </div>
@@ -50,10 +50,10 @@ export default function FavoritePage() {
 
               <div className="px-4 py-3">
                 <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
-                  {book.judul_buku}
+                  {books.judul_buku}
                 </h3>
                 <p className="mt-1 text-xs text-gray-500">
-                  {book.penulis_buku}
+                  {books.penulis_buku}
                 </p>
               </div>
             </Link>

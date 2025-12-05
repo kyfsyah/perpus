@@ -9,7 +9,7 @@ export async function GET() {
     const [[userRow]] = await db.query("SELECT COUNT(*) AS total FROM users");
 
     // Hitung buku
-    const [[bookRow]] = await db.query("SELECT COUNT(*) AS total FROM buku");
+    const [[booksRow]] = await db.query("SELECT COUNT(*) AS total FROM buku");
 
     // Hitung buku dipinjam
     const [[borrowedRow]] = await db.query("SELECT COUNT(*) AS total FROM peminjaman WHERE status = 'dipinjam'");
@@ -19,7 +19,7 @@ export async function GET() {
 
     return NextResponse.json({
       users: userRow.total,
-      books: bookRow.total,
+      books: booksRow.total,
       borrowed: borrowedRow.total,
       favorites: favRow.total,
     });

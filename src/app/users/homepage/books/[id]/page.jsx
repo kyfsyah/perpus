@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
-export default function BookDetail() {
+export default function BooksDetail() {
   const { id } = useParams();            // id dari URL (string)
   const numericId = Number(id);
 
-  const [book, setBook] = useState(null);
+  const [books, setBooks] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -15,15 +15,15 @@ export default function BookDetail() {
   useEffect(() => {
     if (!id) return;
 
-    async function loadBook() {
+    async function loadBooks() {
       try {
-        const res = await fetch(`/api/book/${id}`, { cache: "no-store" });
+        const res = await fetch(`/api/books/${id}`, { cache: "no-store" });
         if (!res.ok) {
-          setBook(null);
+          setBooks(null);
           return;
         }
         const data = await res.json();
-        setBook(data);
+        setBooks(data);
       } catch (err) {
         console.error("BOOK DETAIL ERROR:", err);
       } finally {
@@ -47,13 +47,13 @@ export default function BookDetail() {
       }
     }
 
-    loadBook();
+    loadBooks();
     checkFavorite();
   }, [id, numericId]);
 
   // ================== TOGGLE FAVORITE ==================
   async function toggleFavorite() {
-    if (!book) return;
+    if (!books) return;
 
     try {
       if (isFavorite) {
@@ -61,7 +61,7 @@ export default function BookDetail() {
         await fetch("/api/favorite", {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ bookId: book.id_buku }),
+          body: JSON.stringify({ booksId: books.id_buku }),
         });
         setIsFavorite(false);
       } else {
@@ -69,7 +69,7 @@ export default function BookDetail() {
         await fetch("/api/favorite", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ bookId: book.id_buku }),
+          body: JSON.stringify({ booksId: books.id_buku }),
         });
         setIsFavorite(true);
       }
@@ -83,7 +83,7 @@ export default function BookDetail() {
     return <div className="p-10">Loading...</div>;
   }
 
-  if (!book) {
+  if (!books) {
     return (
       <div className="p-10">
         <h1 className="text-2xl font-bold">Buku tidak ditemukan</h1>
@@ -92,8 +92,8 @@ export default function BookDetail() {
   }
 
   const coverSrc =
-    book.cover_buku?.trim()
-      ? `/image/cover/${book.cover_buku}`
+    books.cover_buku?.trim()
+      ? `/image/cover/${books.cover_buku}`
       : "/default-cover.png";
 
   return (
@@ -107,7 +107,7 @@ export default function BookDetail() {
               <div className="bg-white rounded-xl shadow w-full h-[520px] flex items-center justify-center">
                 <img
                   src={coverSrc}
-                  alt={book.judul_buku}
+                  alt={books.judul_buku}
                   className="max-h-full max-w-full object-contain"
                 />
               </div>
@@ -118,23 +118,23 @@ export default function BookDetail() {
           <div className="flex-1">
             {/* JUDUL */}
             <h1 className="text-[28px] font-semibold text-gray-900">
-              {book.judul_buku}
+              {books.judul_buku}
             </h1>
 
             <p className="text-gray-600 mt-1 text-[15px]">
-              {book.penulis_buku}
+              {books.penulis_buku}
             </p>
 
             {/* BADGE + RATING */}
             <div className="flex items-center gap-4 mt-4">
               <span className="bg-red-100 text-red-700 px-4 py-1 rounded-full text-sm font-medium">
-                {book.kategori}
+                {books.kategori}
               </span>
 
               <span className="flex items-center gap-1 text-yellow-500 font-medium">
                 ★{" "}
                 <span className="text-gray-700">
-                  {book.rating || "4.5"} (2 ulasan)
+                  {books.rating || "4.5"} (2 ulasan)
                 </span>
               </span>
             </div>
@@ -142,14 +142,14 @@ export default function BookDetail() {
             {/* DETAIL TABLE */}
             <div className="mt-8 border rounded-xl overflow-hidden">
               {[
-                ["Penulis", book.penulis_buku],
-                ["Penerbit", book.penerbit_buku],
-                ["Deskripsi Fisik", book.deskripsi],
-                ["ISBN", book.isbn],
-                ["Subjek", book.kategori],
-                ["RAK", book.id_rak],
-                ["Stock", book.stock],
-                ["Call Number", book.call_number || "-"],
+                ["Penulis", books.penulis_buku],
+                ["Penerbit", books.penerbit_buku],
+                ["Deskripsi Fisik", books.deskripsi],
+                ["ISBN", books.isbn],
+                ["Subjek", books.kategori],
+                ["RAK", books.id_rak],
+                ["Stock", books.stock],
+                ["Call Number", books.call_number || "-"],
               ].map(([label, value], i) => (
                 <div
                   key={i}
@@ -178,7 +178,7 @@ export default function BookDetail() {
 
         {/* PINJAM */}
         <button
-          onClick={() => window.location.href = `/users/homepage/book/${book.id_buku}/peminjaman`}
+          onClick={() => window.location.href = `/users/homepage/books/${books.id_buku}/peminjaman`}
           className="px-8 py-3 bg-blue-800 text-white rounded-lg font-medium hover:bg-blue-900 transition"
         >
           Pinjam buku ini

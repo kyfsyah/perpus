@@ -22,7 +22,7 @@ export default function Navbar() {
         <Image src="/assets/logoTB.jpg" alt="logo" width={36} height={36} />
         <div className="flex flex-col leading-tight">
           <span className="text-gray-600 text-sm tracking-wide">Perpustakaan</span>
-          <span className="text-sky-900 font-bold text-lg">CENDEKIA</span>
+          <span className="text-sky-900 font-bold text-lg">STARBHAK</span>
         </div>
       </div>
 

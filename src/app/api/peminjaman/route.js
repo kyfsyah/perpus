@@ -19,21 +19,20 @@ export async function GET(req) {
     const db = await getDb();
 
     const [rows] = await db.query(`
-  SELECT 
-    p.id_peminjaman,
-    p.tanggal_peminjaman,
-    p.tanggal_pengembalian,
-    p.pengembalian AS pengembalian,
-    p.status,
+      SELECT 
+        p.id_peminjaman,
+        p.tanggal_peminjaman,
+        p.tanggal_pengembalian,
+        p.pengembalian AS pengembalian,
+        p.status,
 
-    u.username AS user_nama,
-    b.judul_buku AS buku_judul
-    
-  FROM peminjaman p
-  JOIN users u ON u.id_users = p.id_users
-  JOIN buku b ON b.id_buku = p.id_book
-  ORDER BY p.id_peminjaman DESC
-`);
+        u.username AS user_nama,
+        b.judul_buku AS buku_judul
+      FROM peminjaman p
+      JOIN users u ON u.id_users = p.id_users
+      JOIN buku b ON b.id_buku = p.id_book
+      ORDER BY p.id_peminjaman DESC
+    `);
 
     return NextResponse.json({ success: true, data: rows });
 
@@ -51,9 +50,12 @@ export async function POST(req) {
   }
 
   try {
-    const { id_book, tanggal_peminjaman, tanggal_pengembalian } = await req.json();
+    const { id_books, id_book, tanggal_peminjaman, tanggal_pengembalian } = await req.json();
 
-    if (!id_book || !tanggal_peminjaman || !tanggal_pengembalian) {
+    // terima kedua nama field (id_book dari frontend)
+    const bookId = id_books ?? id_book;
+
+    if (!bookId || !tanggal_peminjaman || !tanggal_pengembalian) {
       return NextResponse.json({ success: false, msg: "Incomplete data" }, { status: 400 });
     }
 
@@ -62,7 +64,7 @@ export async function POST(req) {
     await db.query(`
     INSERT INTO peminjaman (id_users, id_book, tanggal_peminjaman, tanggal_pengembalian, status)
     VALUES (?, ?, ?, ?, 'Menunggu')`, 
-    [user.id, id_book, tanggal_peminjaman, tanggal_pengembalian]);
+    [user.id, bookId, tanggal_peminjaman, tanggal_pengembalian]);
 
     return NextResponse.json({ success: true });
 

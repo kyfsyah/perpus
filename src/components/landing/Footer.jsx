@@ -66,8 +66,8 @@ export default function Footer() {
           <h4 className="font-semibold mb-4">Navigasi</h4>
           <ul className="space-y-2 text-slate-600">
             <li><a href="#" className="hover:text-primary">Home</a></li>
-            <li><a href="#" className="hover:text-primary">Koleksi Buku</a></li>
             <li><a href="#" className="hover:text-primary">Tentang Kami</a></li>
+            <li><a href="#" className="hover:text-primary">Koleksi Buku</a></li>
             <li><a href="#" className="hover:text-primary">Kontak</a></li>
           </ul>
         </div>
